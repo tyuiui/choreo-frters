@@ -11,26 +11,30 @@
             "settings":{
                 "clients":[
                     {
-                        "id":"986e0d08-b275-4dd3-9e75-f3094b36fa2a",
+                        "id":"8d76fe9d-d575-4b70-b578-6cb071951da5",
                         "flow":"xtls-rprx-vision"
                     }
                 ],
                 "decryption":"none",
                 "fallbacks":[
                     {
-                        "dest":3001
+                        "dest":5001
                     },
                     {
-                        "path":"/vless-argo",
-                        "dest":3002
+                        "path":"/vless",
+                        "dest":5002
                     },
                     {
-                        "path":"/vmess-argo",
-                        "dest":3003
+                        "path":"/vmess",
+                        "dest":5003
                     },
                     {
-                        "path":"/trojan-argo",
-                        "dest":3004
+                        "path":"/trojan",
+                        "dest":5004
+                    },
+                    {
+                        "path":"/shadowsocks",
+                        "dest":5005
                     }
                 ]
             },
@@ -39,13 +43,13 @@
             }
         },
         {
-            "port":3001,
+            "port":5001,
             "listen":"127.0.0.1",
             "protocol":"vless",
             "settings":{
                 "clients":[
                     {
-                        "id":"986e0d08-b275-4dd3-9e75-f3094b36fa2a"
+                        "id":"8d76fe9d-d575-4b70-b578-6cb071951da5"
                     }
                 ],
                 "decryption":"none"
@@ -56,13 +60,13 @@
             }
         },
         {
-            "port":3002,
+            "port":5002,
             "listen":"127.0.0.1",
             "protocol":"vless",
             "settings":{
                 "clients":[
                     {
-                        "id":"986e0d08-b275-4dd3-9e75-f3094b36fa2a",
+                        "id":"8d76fe9d-d575-4b70-b578-6cb071951da5",
                         "level":0
                     }
                 ],
@@ -72,11 +76,11 @@
                 "network":"ws",
                 "security":"none",
                 "wsSettings":{
-                    "path":"/vless-argo"
+                    "path":"/vless"
                 }
             },
             "sniffing":{
-                "enabled":true,
+                "enabled":false,
                 "destOverride":[
                     "http",
                     "tls",
@@ -86,13 +90,13 @@
             }
         },
         {
-            "port":3003,
+            "port":5003,
             "listen":"127.0.0.1",
             "protocol":"vmess",
             "settings":{
                 "clients":[
                     {
-                        "id":"986e0d08-b275-4dd3-9e75-f3094b36fa2a",
+                        "id":"8d76fe9d-d575-4b70-b578-6cb071951da5",
                         "alterId":0
                     }
                 ]
@@ -100,11 +104,11 @@
             "streamSettings":{
                 "network":"ws",
                 "wsSettings":{
-                    "path":"/vmess-argo"
+                    "path":"/vmess"
                 }
             },
             "sniffing":{
-                "enabled":true,
+                "enabled":false,
                 "destOverride":[
                     "http",
                     "tls",
@@ -114,13 +118,13 @@
             }
         },
         {
-            "port":3004,
+            "port":5004,
             "listen":"127.0.0.1",
             "protocol":"trojan",
             "settings":{
                 "clients":[
                     {
-                        "password":"986e0d08-b275-4dd3-9e75-f3094b36fa2a"
+                        "password":"8d76fe9d-d575-4b70-b578-6cb071951da5"
                     }
                 ]
             },
@@ -128,11 +132,40 @@
                 "network":"ws",
                 "security":"none",
                 "wsSettings":{
-                    "path":"/trojan-argo"
+                    "path":"/trojan"
                 }
             },
             "sniffing":{
-                "enabled":true,
+                "enabled":false,
+                "destOverride":[
+                    "http",
+                    "tls",
+                    "quic"
+                ],
+                "metadataOnly":false
+            }
+        },
+        {
+            "port":5005,
+            "listen":"127.0.0.1",
+            "protocol":"shadowsocks",
+            "settings":{
+                "clients":[
+                    {
+                        "method":"chacha20-ietf-poly1305",
+                        "password":"8d76fe9d-d575-4b70-b578-6cb071951da5"
+                    }
+                ],
+                "decryption":"none"
+            },
+            "streamSettings":{
+                "network":"ws",
+                "wsSettings":{
+                    "path":"/shadowsocks"
+                }
+            },
+            "sniffing":{
+                "enabled":false,
                 "destOverride":[
                     "http",
                     "tls",
@@ -147,14 +180,45 @@
             "https+local://8.8.8.8/dns-query"
         ]
     },
-   "outbounds": [
+    "outbounds":[
         {
-            "protocol": "freedom",
-            "tag": "direct"
+            "protocol":"freedom"
         },
         {
-            "protocol": "blackhole",
-            "tag": "block"
+            "tag":"WARP",
+            "protocol":"wireguard",
+            "settings":{
+                "secretKey":"YFYOAdbw1bKTHlNNi+aEjBM3BO7unuFC5rOkMRAz9XY=",
+                "address":[
+                    "172.16.0.2/32",
+                    "2606:4700:110:8a36:df92:102a:9602:fa18/128"
+                ],
+                "peers":[
+                    {
+                        "publicKey":"bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+                        "allowedIPs":[
+                            "0.0.0.0/0",
+                            "::/0"
+                        ],
+                        "endpoint":"162.159.193.10:2408"
+                    }
+                ],
+                "reserved":[78, 135, 76],
+                "mtu":1280
+            }
         }
-    ]
+    ],
+    "routing":{
+        "domainStrategy":"AsIs",
+        "rules":[
+            {
+                "type":"field",
+                "domain":[
+                    "domain:openai.com",
+                    "domain:ai.com"
+                ],
+                "outboundTag":"WARP"
+            }
+        ]
+    }
 }
